@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LoveSync | Psychology Love Meter</title>
+    <title>LoveSync | Psychology Love Meter + Admin Panel</title>
     <style>
         * {
             margin: 0;
@@ -15,34 +15,61 @@
         body {
             background: linear-gradient(145deg, #fce4ec 0%, #ffe0e7 100%);
             min-height: 100vh;
-            padding: 24px 20px;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
+        /* Tab Navigation */
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .tab-btn {
+            background: #880e4f;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            width: auto;
+            opacity: 0.7;
+        }
+        .tab-btn.active {
+            background: #e91e63;
+            opacity: 1;
+            box-shadow: 0 4px 15px rgba(233,30,99,0.3);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Common Styles */
         .hero {
             text-align: center;
             margin-bottom: 32px;
         }
-
         .hero h1 {
             font-size: 2.5rem;
             background: linear-gradient(135deg, #c2185b, #e91e63);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
-
         .hero p {
             color: #ad1457;
             font-weight: 500;
-            margin-top: 8px;
         }
-
         .card {
             background: rgba(255, 250, 245, 0.96);
             border-radius: 48px;
@@ -50,7 +77,6 @@
             margin-bottom: 28px;
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
         }
-
         .card h2 {
             font-size: 1.8rem;
             margin-bottom: 20px;
@@ -58,34 +84,27 @@
             border-left: 6px solid #f06292;
             padding-left: 18px;
         }
-
         .input-group {
             margin-bottom: 20px;
         }
-
         .input-group label {
             display: block;
             font-weight: 600;
             color: #4a154b;
             margin-bottom: 6px;
         }
-
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 14px 20px;
             border-radius: 60px;
             border: 1.5px solid #ffb7c5;
             background: #fff0f5;
             font-size: 1rem;
-            transition: 0.2s;
             outline: none;
         }
-
         .input-group input:focus {
             border-color: #e91e63;
-            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.2);
         }
-
         button {
             background: #e91e63;
             color: white;
@@ -98,12 +117,10 @@
             transition: 0.2s;
             width: 100%;
         }
-
         button:hover {
             background: #c2185b;
             transform: scale(0.98);
         }
-
         .love-result {
             background: #fce4ec;
             border-radius: 40px;
@@ -111,13 +128,11 @@
             margin-top: 22px;
             text-align: center;
         }
-
         .percentage {
             font-size: 3.6rem;
             font-weight: 800;
             color: #d81b60;
         }
-
         .psycho-message {
             font-size: 1.1rem;
             font-style: italic;
@@ -126,7 +141,6 @@
             border-radius: 32px;
             margin: 16px 0;
         }
-
         .love-cycle {
             font-weight: bold;
             color: #880e4f;
@@ -134,46 +148,124 @@
             padding: 12px;
             border-radius: 32px;
         }
-
         .logout-area {
             text-align: right;
             margin-bottom: 16px;
         }
-
         .logout-btn {
             width: auto;
             background: #b71c1c;
             padding: 8px 22px;
             font-size: 0.85rem;
         }
-
         .info-note {
             font-size: 0.75rem;
             text-align: center;
             margin-top: 20px;
             color: #a55;
         }
-
-        .switch-link {
-            text-align: center;
-            margin-top: 15px;
+        /* Admin Panel Styles */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
-
-        .switch-link a {
-            color: #c2185b;
-            text-decoration: none;
+        .stat-box {
+            background: #1a1a3e;
+            padding: 15px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+        .stat-box h3 {
+            font-size: 1.8rem;
+            color: #ffd966;
+        }
+        .admin-table {
+            overflow-x: auto;
+        }
+        .admin-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+        .admin-table th {
+            background: #880e4f;
+            color: white;
+        }
+        .message-item {
+            background: #f3e5f5;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            width: auto;
+            padding: 5px 12px;
+            font-size: 0.7rem;
+            margin: 2px;
+        }
+        .btn-green {
+            background: #2e7d32;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .password-cell {
+            background: #fff3e0;
+            font-family: monospace;
             font-weight: bold;
         }
-
-        @media (max-width: 680px) {
-            .card {
-                padding: 20px;
-            }
+        .action-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .bg-reg { background: #2e7d32; color: white; }
+        .bg-login { background: #0288d1; color: white; }
+        .bg-love { background: #c2185b; color: white; }
+        .bg-admin { background: #ff8c00; color: white; }
+        @media (max-width: 768px) {
+            .tab-btn { padding: 8px 16px; font-size: 0.8rem; }
+            .card { padding: 18px; }
         }
     </style>
 </head>
 <body>
-<div class="container" id="appRoot"></div>
+<div class="container">
+    <!-- Tab Buttons -->
+    <div class="tab-buttons">
+        <button class="tab-btn active" id="tabMainBtn">💖 Love Meter Website</button>
+        <button class="tab-btn" id="tabAdminBtn">🔐 Admin Panel</button>
+    </div>
+
+    <!-- Main Website Tab -->
+    <div id="mainTab" class="tab-content active">
+        <div id="mainAppRoot"></div>
+    </div>
+
+    <!-- Admin Panel Tab -->
+    <div id="adminTab" class="tab-content">
+        <div id="adminAppRoot"></div>
+    </div>
+</div>
 
 <script>
     // ==================== STORAGE KEYS ====================
@@ -181,9 +273,15 @@
     const SESSION_KEY = 'lovesync_session';
     const ACTIVITY_KEY = 'lovesync_activity_detailed';
     const LOVE_HISTORY_KEY = 'lovesync_love_history';
-    const MESSAGES_KEY = 'lovesync_messages'; // For admin to customize messages
+    const MESSAGES_KEY = 'lovesync_messages';
+    
+    // ==================== ADMIN CREDENTIALS (As per your request) ====================
+    // ID: achutapradhan56@gmail.com , Password: RAJPRADHAN78
+    const ADMIN_ID = "achutapradhan56@gmail.com";
+    const ADMIN_PASSWORD = "RAJPRADHAN78";
+    const ADMIN_SESSION_KEY = 'lovesync_admin_session';
 
-    // ==================== DEFAULT MESSAGES (Admin can override) ====================
+    // ==================== DEFAULT MESSAGES ====================
     function getDefaultPsychologyMessages() {
         return [
             "💞 Secure Attachment Style: You both share trust, emotional availability & genuine warmth. This is the healthiest bond!",
@@ -263,7 +361,7 @@
             action,
             timestamp: new Date().toLocaleString(),
             details,
-            id: Date.now() + Math.random()
+            id: Date.now()
         });
         if (arr.length > 200) arr.pop();
         localStorage.setItem(ACTIVITY_KEY, JSON.stringify(arr));
@@ -286,7 +384,6 @@
         localStorage.setItem(LOVE_HISTORY_KEY, JSON.stringify(arr));
     }
 
-    // Get random result (can be overridden by admin's manual percentage)
     function getRandomLoveResult(manualPercentage = null) {
         const psychologyMessages = getPsychologyMessages();
         const loveCycles = getLoveCycles();
@@ -310,9 +407,9 @@
         });
     }
 
-    // ==================== AUTH RENDER ====================
-    function renderAuth() {
-        const root = document.getElementById('appRoot');
+    // ==================== MAIN WEBSITE AUTH ====================
+    function renderMainAuth() {
+        const root = document.getElementById('mainAppRoot');
         root.innerHTML = `
             <div class="hero">
                 <h1>💖 LoveSync · Psychology Love Meter</h1>
@@ -320,38 +417,18 @@
             </div>
             <div class="card">
                 <h2>📝 Register</h2>
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="regName" placeholder="e.g., Rohan Sharma">
-                </div>
-                <div class="input-group">
-                    <label>Email (Login ID)</label>
-                    <input type="email" id="regEmail" placeholder="you@example.com">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="regPass" placeholder="min 4 characters">
-                </div>
+                <div class="input-group"><label>Full Name</label><input type="text" id="regName" placeholder="e.g., Rohan Sharma"></div>
+                <div class="input-group"><label>Email (Login ID)</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="regPass" placeholder="min 4 characters"></div>
                 <button id="registerBtn">💗 Register</button>
             </div>
             <div class="card">
                 <h2>🔐 Login</h2>
-                <div class="input-group">
-                    <label>Email (ID)</label>
-                    <input type="email" id="loginEmail" placeholder="your@email.com">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass" placeholder="password">
-                </div>
+                <div class="input-group"><label>Email (ID)</label><input type="email" id="loginEmail" placeholder="your@email.com"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="loginPass" placeholder="password"></div>
                 <button id="loginBtn">✨ Login to Love Meter</button>
             </div>
-            <div class="switch-link">
-                <a href="admin.html" target="_blank">🔒 Admin Panel Login →</a>
-            </div>
-            <div class="info-note">
-                🔮 Admin panel has separate ID & Password login system
-            </div>
+            <div class="info-note">🔮 Admin Panel available in the tab above</div>
         `;
 
         document.getElementById('registerBtn').addEventListener('click', () => {
@@ -362,15 +439,9 @@
             if (pass.length < 4) return alert("Password min 4 chars");
             const users = getUsers();
             if (users.find(u => u.email === email)) return alert("Email already exists. Please login.");
-            users.push({ 
-                email, 
-                password: pass, 
-                fullname, 
-                registeredAt: new Date().toLocaleString(),
-                loveCalculations: [] 
-            });
+            users.push({ email, password: pass, fullname, registeredAt: new Date().toLocaleString(), loveCalculations: [] });
             saveUsers(users);
-            logActivity(email, "REGISTER", `User ${fullname} registered with ID: ${email}`);
+            logActivity(email, "REGISTER", `User ${fullname} registered`);
             alert("Registration successful! Please login.");
             document.getElementById('regName').value = '';
             document.getElementById('regEmail').value = '';
@@ -384,108 +455,64 @@
             const user = users.find(u => u.email === email && u.password === pass);
             if (!user) return alert("Invalid credentials");
             setSession(email);
-            logActivity(email, "LOGIN", `User logged in successfully`);
+            logActivity(email, "LOGIN", `User logged in`);
             renderMainApp();
         });
     }
 
-    // ==================== MAIN LOVE APP ====================
     function renderMainApp() {
         const session = getSession();
-        if (!session) {
-            renderAuth();
-            return;
-        }
+        if (!session) { renderMainAuth(); return; }
         const users = getUsers();
         const currentUser = users.find(u => u.email === session.email) || { fullname: session.email, email: session.email };
-        const root = document.getElementById('appRoot');
+        const root = document.getElementById('mainAppRoot');
         root.innerHTML = `
-            <div class="logout-area">
-                <button class="logout-btn" id="logoutBtnMain">🚪 Logout (${escapeHtml(currentUser.fullname || currentUser.email)})</button>
-            </div>
-            <div class="hero">
-                <h1>💞 Love Psychology Meter</h1>
-                <p>Discover your random love cycle & percentage</p>
-            </div>
+            <div class="logout-area"><button class="logout-btn" id="logoutBtnMain">🚪 Logout (${escapeHtml(currentUser.fullname || currentUser.email)})</button></div>
+            <div class="hero"><h1>💞 Love Psychology Meter</h1><p>Discover your random love cycle & percentage</p></div>
             <div class="card">
                 <h2>💑 Enter Names for Love Calculation</h2>
-                <div class="input-group">
-                    <label>✨ Your Name</label>
-                    <input type="text" id="yourName" placeholder="Your name" value="${escapeHtml(currentUser.fullname?.split(' ')[0] || 'Me')}">
-                </div>
-                <div class="input-group">
-                    <label>🌟 Partner's Name</label>
-                    <input type="text" id="partnerName" placeholder="e.g., Priya, Aditya, Jessica">
-                </div>
+                <div class="input-group"><label>✨ Your Name</label><input type="text" id="yourName" placeholder="Your name" value="${escapeHtml(currentUser.fullname?.split(' ')[0] || 'Me')}"></div>
+                <div class="input-group"><label>🌟 Partner's Name</label><input type="text" id="partnerName" placeholder="e.g., Priya, Aditya"></div>
                 <button id="calculateBtn">💘 Calculate Love Destiny</button>
                 <div id="loveResultArea"></div>
             </div>
-            <div class="switch-link">
-                <a href="admin.html" target="_blank">🔒 Admin Panel (Separate Login)</a>
-            </div>
-            <div class="info-note">
-                📊 Admin panel has its own ID & Password - shows all user details
-            </div>
+            <div class="info-note">📊 Admin Panel available in the tab above</div>
         `;
 
         document.getElementById('calculateBtn').addEventListener('click', () => {
             const yourName = document.getElementById('yourName').value.trim();
             const partnerName = document.getElementById('partnerName').value.trim();
             if (!yourName || !partnerName) return alert("Please enter both names 💌");
-            
             const result = getRandomLoveResult();
-            
             let users = getUsers();
             const userIndex = users.findIndex(u => u.email === currentUser.email);
             if (userIndex !== -1) {
                 if (!users[userIndex].loveCalculations) users[userIndex].loveCalculations = [];
-                users[userIndex].loveCalculations.push({
-                    yourName,
-                    partnerName,
-                    percentage: result.percentage,
-                    psychologyMessage: result.message,
-                    loveCycle: result.cycle,
-                    timestamp: new Date().toLocaleString()
-                });
+                users[userIndex].loveCalculations.push({ yourName, partnerName, percentage: result.percentage, psychologyMessage: result.message, loveCycle: result.cycle, timestamp: new Date().toLocaleString() });
                 saveUsers(users);
             }
-            
             saveLoveHistory(currentUser.email, yourName, partnerName, result.percentage, result.message, result.cycle);
-            logActivity(currentUser.email, "LOVE_CALCULATION", `Calculated love between ${yourName} & ${partnerName} = ${result.percentage}%`);
-            
-            const resultDiv = document.getElementById('loveResultArea');
-            resultDiv.innerHTML = `
+            logActivity(currentUser.email, "LOVE_CALCULATION", `${yourName} & ${partnerName} = ${result.percentage}%`);
+            document.getElementById('loveResultArea').innerHTML = `
                 <div class="love-result">
                     <div class="percentage">💖 ${result.percentage}% 💖</div>
                     <div class="psycho-message"><strong>🧠 Psychology Type:</strong> ${result.message}</div>
                     <div class="love-cycle"><strong>🔄 Love Cycle:</strong> ${result.cycle}</div>
-                    <div style="margin-top:12px; font-size:0.75rem;">✨ Random based on cosmic love psychology ✨</div>
-                </div>
-            `;
+                </div>`;
         });
-
         document.getElementById('logoutBtnMain').addEventListener('click', () => {
-            logActivity(currentUser.email, "LOGOUT", "User logged out from main site");
+            logActivity(currentUser.email, "LOGOUT", "Logged out");
             setSession(null);
-            renderAuth();
+            renderMainAuth();
         });
     }
 
-    function init() {
-        const session = getSession();
-        if (session && session.email) {
-            const users = getUsers();
-            const exists = users.find(u => u.email === session.email);
-            if (exists) renderMainApp();
-            else {
-                setSession(null);
-                renderAuth();
-            }
-        } else {
-            renderAuth();
-        }
+    // ==================== ADMIN PANEL (with your credentials) ====================
+    let adminLoggedIn = false;
+
+    function isAdminLoggedIn() {
+        return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
     }
-    init();
-</script>
-</body>
-</html>
+
+    function setAdminSession(val) {
+        localStorage.setItem(ADMIN_SESSION_KEY, va
