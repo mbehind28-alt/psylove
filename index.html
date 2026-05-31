@@ -1,4 +1,3 @@
-<!-- file: index.html - Main Love Psychology Website -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -182,6 +181,59 @@
     const SESSION_KEY = 'lovesync_session';
     const ACTIVITY_KEY = 'lovesync_activity_detailed';
     const LOVE_HISTORY_KEY = 'lovesync_love_history';
+    const MESSAGES_KEY = 'lovesync_messages'; // For admin to customize messages
+
+    // ==================== DEFAULT MESSAGES (Admin can override) ====================
+    function getDefaultPsychologyMessages() {
+        return [
+            "💞 Secure Attachment Style: You both share trust, emotional availability & genuine warmth. This is the healthiest bond!",
+            "🔥 Anxious-Passionate Bond: Intense chemistry and deep emotions. Remember to communicate needs clearly.",
+            "🌸 Avoidant-Meets-Secure: Growth journey ahead — patience and understanding bring you closer.",
+            "✨ Eros Love: Magnetic attraction, romance and deep desire rule your connection. Physical and emotional sparks fly!",
+            "🍃 Ludus Playful Love: Fun, flirty & carefree — keep the spark alive with honesty and commitment.",
+            "💜 Agape Love: Selfless & compassionate; you uplift each other's souls. Divine unconditional connection.",
+            "🌙 Storge Love: Best friends & steady flame — companionship at its finest. Built on deep friendship.",
+            "🧠 Psychology Insight: Your love languages align through acts of service & quality time. Keep nurturing.",
+            "🌈 Cosmic Match: Vulnerability is your superpower — keep sharing dreams and fears openly.",
+            "💎 Twin Flame Vibration: Mirror each other's strengths and shadows beautifully. Intense spiritual connection.",
+            "🦋 Growth-Oriented Love: You challenge each other to become better versions of yourselves.",
+            "🌟 Soulmate Recognition: Deep sense of knowing — as if you've met in another lifetime."
+        ];
+    }
+
+    function getDefaultLoveCycles() {
+        return [
+            "❤️ Romantic Phase: Butterflies & new discoveries, everything feels magical",
+            "🌀 Trust Building Cycle: Deepening emotional safety and vulnerability",
+            "⚡ Power Struggle → Learning compromise and healthy boundaries",
+            "🌿 Commitment Renewal: Re-choosing each other daily with intention",
+            "✨ Synergy Cycle: Creativity & shared joy, building dreams together",
+            "🌙 Shadow Integration: Healing old wounds together as a team",
+            "🌟 Spiritual Union: Beyond ego, pure soul connection and understanding"
+        ];
+    }
+
+    function getPsychologyMessages() {
+        const stored = localStorage.getItem(MESSAGES_KEY);
+        if (stored) {
+            const data = JSON.parse(stored);
+            return data.psychologyMessages || getDefaultPsychologyMessages();
+        }
+        return getDefaultPsychologyMessages();
+    }
+
+    function getLoveCycles() {
+        const stored = localStorage.getItem(MESSAGES_KEY);
+        if (stored) {
+            const data = JSON.parse(stored);
+            return data.loveCycles || getDefaultLoveCycles();
+        }
+        return getDefaultLoveCycles();
+    }
+
+    function saveMessages(psychologyMessages, loveCycles) {
+        localStorage.setItem(MESSAGES_KEY, JSON.stringify({ psychologyMessages, loveCycles }));
+    }
 
     // ==================== UTILITIES ====================
     function getUsers() {
@@ -217,7 +269,7 @@
         localStorage.setItem(ACTIVITY_KEY, JSON.stringify(arr));
     }
 
-    function saveLoveHistory(userEmail, yourName, partnerName, percentage, message, cycle) {
+    function saveLoveHistory(userEmail, yourName, partnerName, percentage, message, cycle, isAdminOverride = false) {
         let history = localStorage.getItem(LOVE_HISTORY_KEY);
         let arr = history ? JSON.parse(history) : [];
         arr.unshift({
@@ -227,50 +279,24 @@
             percentage,
             psychologyMessage: message,
             loveCycle: cycle,
-            timestamp: new Date().toLocaleString()
+            timestamp: new Date().toLocaleString(),
+            isAdminOverride
         });
         if (arr.length > 100) arr.pop();
         localStorage.setItem(LOVE_HISTORY_KEY, JSON.stringify(arr));
     }
 
-    // ==================== LOVE PSYCHOLOGY DATA ====================
-    const psychologyMessages = [
-        "💞 Secure Attachment Style: You both share trust, emotional availability & genuine warmth. This is the healthiest bond!",
-        "🔥 Anxious-Passionate Bond: Intense chemistry and deep emotions. Remember to communicate needs clearly.",
-        "🌸 Avoidant-Meets-Secure: Growth journey ahead — patience and understanding bring you closer.",
-        "✨ Eros Love: Magnetic attraction, romance and deep desire rule your connection. Physical and emotional sparks fly!",
-        "🍃 Ludus Playful Love: Fun, flirty & carefree — keep the spark alive with honesty and commitment.",
-        "💜 Agape Love: Selfless & compassionate; you uplift each other's souls. Divine unconditional connection.",
-        "🌙 Storge Love: Best friends & steady flame — companionship at its finest. Built on deep friendship.",
-        "🧠 Psychology Insight: Your love languages align through acts of service & quality time. Keep nurturing.",
-        "🌈 Cosmic Match: Vulnerability is your superpower — keep sharing dreams and fears openly.",
-        "💎 Twin Flame Vibration: Mirror each other's strengths and shadows beautifully. Intense spiritual connection.",
-        "🦋 Growth-Oriented Love: You challenge each other to become better versions of yourselves.",
-        "🌟 Soulmate Recognition: Deep sense of knowing — as if you've met in another lifetime."
-    ];
-
-    const loveCycleOptions = [
-        "❤️ Romantic Phase: Butterflies & new discoveries, everything feels magical",
-        "🌀 Trust Building Cycle: Deepening emotional safety and vulnerability",
-        "⚡ Power Struggle → Learning compromise and healthy boundaries",
-        "🌿 Commitment Renewal: Re-choosing each other daily with intention",
-        "✨ Synergy Cycle: Creativity & shared joy, building dreams together",
-        "🌙 Shadow Integration: Healing old wounds together as a team",
-        "🌟 Spiritual Union: Beyond ego, pure soul connection and understanding"
-    ];
-
-    function getRandomPercent() {
-        return Math.floor(Math.random() * 41) + 55;
-    }
-
-    function getRandomLoveResult() {
-        const percent = getRandomPercent();
+    // Get random result (can be overridden by admin's manual percentage)
+    function getRandomLoveResult(manualPercentage = null) {
+        const psychologyMessages = getPsychologyMessages();
+        const loveCycles = getLoveCycles();
+        const percent = manualPercentage !== null ? manualPercentage : (Math.floor(Math.random() * 41) + 55);
         const msgIndex = Math.floor(Math.random() * psychologyMessages.length);
-        const cycleIndex = Math.floor(Math.random() * loveCycleOptions.length);
+        const cycleIndex = Math.floor(Math.random() * loveCycles.length);
         return {
             percentage: percent,
             message: psychologyMessages[msgIndex],
-            cycle: loveCycleOptions[cycleIndex]
+            cycle: loveCycles[cycleIndex]
         };
     }
 
